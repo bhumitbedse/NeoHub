@@ -5,12 +5,11 @@ services:
     image: mcr.microsoft.com/devcontainers/base:ubuntu-22.04
     volumes:
       - ../:/workspace:cached
-      - ~/.gitconfig:/root/.gitconfig:ro
-      - ~/.ssh:/root/.ssh:ro
     command: sleep infinity
-    environment:
-      - DISPLAY=${DISPLAY:-}
-    network_mode: service:postgres
-    depends_on:
-      - postgres
-      - redis
+    networks:
+      - neohub-net
+
+networks:
+  neohub-net:
+    external: true
+    name: neohub_neohub-net
