@@ -1,0 +1,46 @@
+<div class="container page-layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar-col">
+        <app-filter-sidebar (filterChanged)="onFilterChanged($event)">
+        </app-filter-sidebar>
+    </aside>
+
+    <!-- Main content -->
+    <main class="main-col">
+
+        <!-- Header -->
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">Neovim Plugins</h1>
+                <p class="page-subtitle">
+                    {{ totalElements }} plugins available
+                </p>
+            </div>
+        </div>
+
+        <!-- Loading -->
+        <app-loading-spinner *ngIf="loading"></app-loading-spinner>
+
+        <!-- Grid -->
+        <div *ngIf="!loading" class="plugins-grid">
+            <app-plugin-card *ngFor="let plugin of plugins" [plugin]="plugin">
+            </app-plugin-card>
+        </div>
+
+        <!-- Empty state -->
+        <div *ngIf="!loading && plugins.length === 0" class="empty-state">
+            <mat-icon>search_off</mat-icon>
+            <h3>No plugins found</h3>
+            <p>Try a different search or category</p>
+        </div>
+
+        <!-- Load more -->
+        <div *ngIf="!loading && hasMore" class="load-more">
+            <button mat-stroked-button (click)="loadMore()">
+                Load more plugins
+            </button>
+        </div>
+
+    </main>
+</div>
