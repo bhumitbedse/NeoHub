@@ -1,0 +1,86 @@
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px 0;
+  position: sticky;
+  top: 88px;
+}
+
+.section-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+
+.search-field, .full-width {
+  width: 100%;
+}
+
+.category-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.category-btn {
+  background: none;
+  border: none;
+  color: #64748b;
+  text-align: left;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.15s;
+  width: 100%;
+
+  &:hover {
+    background: #1e2235;
+    color: #e2e8f0;
+  }
+
+  &.active {
+    background: #1a1d35;
+    color: #7c8cff;
+    font-weight: 500;
+  }
+}
+
+.clear-btn {
+  border-color: #2d3154 !important;
+  color: #64748b !important;
+  font-size: 12px !important;
+}
+
+// Material overrides for dark theme
+::ng-deep {
+  .mat-mdc-form-field {
+    .mdc-text-field--outlined {
+      --mdc-outlined-text-field-container-shape: 8px;
+      --mdc-outlined-text-field-outline-color: #1e2235;
+      --mdc-outlined-text-field-focus-outline-color: #7c8cff;
+      --mdc-outlined-text-field-input-text-color: #e2e8f0;
+      --mdc-outlined-text-field-label-text-color: #475569;
+      background: #13151f;
+    }
+  }
+
+  .mat-mdc-select-value-text {
+    color: #e2e8f0 !important;
+  }
+
+  .mat-mdc-option {
+    background: #13151f !important;
+    color: #e2e8f0 !important;
+    &:hover { background: #1e2235 !important; }
+  }
+
+  .mat-mdc-select-panel {
+    background: #13151f !important;
+    border: 1px solid #1e2235 !important;
+  }
+}

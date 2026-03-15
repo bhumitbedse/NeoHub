@@ -1,0 +1,40 @@
+<div class="sidebar">
+
+    <!-- Search -->
+    <div class="sidebar-section">
+        <mat-form-field appearance="outline" class="search-field">
+            <mat-label>Search plugins...</mat-label>
+            <input matInput [(ngModel)]="searchQuery" (keyup.enter)="onSearch()" (input)="onSearch()">
+            <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+    </div>
+
+    <!-- Sort -->
+    <div class="sidebar-section">
+        <h3 class="section-title">Sort By</h3>
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-select [(ngModel)]="selectedSort" (selectionChange)="onSortChange()">
+                <mat-option *ngFor="let opt of sortOptions" [value]="opt.value">
+                    {{ opt.label }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+
+    <!-- Categories -->
+    <div class="sidebar-section">
+        <h3 class="section-title">Categories</h3>
+        <div class="category-list">
+            <button *ngFor="let cat of categories" class="category-btn" [class.active]="selectedCategory === cat.slug"
+                (click)="onCategorySelect(cat.slug)">
+                {{ cat.name }}
+            </button>
+        </div>
+    </div>
+
+    <!-- Clear -->
+    <button *ngIf="selectedCategory || searchQuery" mat-stroked-button class="clear-btn" (click)="clearFilters()">
+        Clear Filters
+    </button>
+
+</div>

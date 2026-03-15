@@ -1,0 +1,49 @@
+@import '@angular/material/prebuilt-themes/purple-green.css';
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  background-color: #0f1117;
+  color: #e2e8f0;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #1a1d27;
+}
+::-webkit-scrollbar-thumb {
+  background: #3d4159;
+  border-radius: 3px;
+}
+
+a {
+  color: #7c8cff;
+  text-decoration: none;
+  &:hover { text-decoration: underline; }
+}
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.tag-chip {
+  background: #1e2235 !important;
+  color: #7c8cff !important;
+  font-size: 11px !important;
+  height: 22px !important;
+  border: 1px solid #2d3154 !important;
+}
+
+.verified-badge {
+  color: #4ade80;
+  font-size: 16px !important;
+}

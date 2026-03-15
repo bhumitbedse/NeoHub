@@ -1,0 +1,34 @@
+<div class="plugin-card" [routerLink]="['/plugins', plugin.slug]">
+
+    <div class="card-header">
+        <div class="plugin-info">
+            <div class="name-row">
+                <span class="plugin-name">{{ plugin.name }}</span>
+                <mat-icon *ngIf="plugin.isVerified" class="verified-badge" matTooltip="Verified plugin">
+                    verified
+                </mat-icon>
+            </div>
+            <span class="full-name">{{ plugin.fullName }}</span>
+        </div>
+        <div class="stars">
+            <mat-icon class="star-icon">star</mat-icon>
+            <span>{{ formatStars(plugin.githubStars) }}</span>
+        </div>
+    </div>
+
+    <p class="description">{{ plugin.description }}</p>
+
+    <div class="card-footer">
+        <div class="tags">
+            <span class="category-tag">{{ plugin.categoryName }}</span>
+            <span *ngFor="let tag of plugin.tags?.slice(0, 2)" class="tag">
+                {{ tag }}
+            </span>
+        </div>
+        <a [href]="plugin.githubUrl" target="_blank" (click)="$event.stopPropagation()" class="github-link"
+            matTooltip="View on GitHub">
+            <mat-icon>open_in_new</mat-icon>
+        </a>
+    </div>
+
+</div>
