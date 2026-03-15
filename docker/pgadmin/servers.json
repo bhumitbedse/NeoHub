@@ -1,0 +1,14 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "NeoHub Local",
+      "Group": "Servers",
+      "Host": "postgres",
+      "Port": 5432,
+      "MaintenanceDB": "neohub",
+      "Username": "neohub",
+      "Password": "neohub_dev",
+      "SSLMode": "prefer"
+    }
+  }
+}

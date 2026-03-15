@@ -1,0 +1,237 @@
+version: "3.9"
+
+# ─────────────────────────────────────────────
+#  NeoHub — Local Development Docker Compose
+#  Usage: docker compose up -d
+# ─────────────────────────────────────────────
+
+networks:
+  neohub-net:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:
+  maven_cache:
+  go_cache:
+  node_modules_cache:
+
+services:
+
+  # ── PostgreSQL ───────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: neohub-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: neohub
+      POSTGRES_USER: neohub
+      POSTGRES_PASSWORD: neohub_dev
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - neohub-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U neohub -d neohub"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Redis ────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: neohub-redis
+    restart: unless-stopped
+    command: redis-server --requirepass neohub_dev --maxmemory 256mb --maxmemory-policy allkeys-lru
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - neohub-net
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "neohub_dev", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Redis Commander (Redis GUI) ───────────────
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: neohub-redis-ui
+    restart: unless-stopped
+    environment:
+      REDIS_HOSTS: "local:redis:6379:0:neohub_dev"
+    ports:
+      - "8090:8081"
+    networks:
+      - neohub-net
+    depends_on:
+      - redis
+
+  # ── pgAdmin (Postgres GUI) ───────────────────
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: neohub-pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: bhumitbedse40@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: neohub_dev
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
+    ports:
+      - "8091:80"
+    volumes:
+      - ./docker/pgadmin/servers.json:/pgadmin4/servers.json:ro
+    networks:
+      - neohub-net
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # ── Mailpit (local email testing) ────────────
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: neohub-mailpit
+    restart: unless-stopped
+    ports:
+      - "8025:8025"   # Web UI
+      - "1025:1025"   # SMTP
+    networks:
+      - neohub-net
+
+  # ── API Gateway (Spring Boot) ────────────────
+  api-gateway:
+    build:
+      context: ./backend/api-gateway
+      dockerfile: Dockerfile.dev
+    container_name: neohub-api-gateway
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/neohub
+      SPRING_DATASOURCE_USERNAME: neohub
+      SPRING_DATASOURCE_PASSWORD: neohub_dev
+      SPRING_REDIS_HOST: redis
+      SPRING_REDIS_PORT: 6379
+      SPRING_REDIS_PASSWORD: neohub_dev
+      PLUGIN_SERVICE_URL: http://plugin-service:8081
+      USER_SERVICE_URL: http://user-service:8082
+      SCRAPER_SERVICE_URL: http://scraper-service:8083
+      JWT_SECRET: dev_jwt_secret_change_in_production_min_32_chars
+      GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID:-your_github_client_id}
+      GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET:-your_github_client_secret}
+    volumes:
+      - ./backend/api-gateway:/app
+      - maven_cache:/root/.m2
+    networks:
+      - neohub-net
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  # ── Plugin Service (Spring Boot) ─────────────
+  plugin-service:
+    build:
+      context: ./backend/plugin-service
+      dockerfile: Dockerfile.dev
+    container_name: neohub-plugin-service
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SERVER_PORT: 8081
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/neohub
+      SPRING_DATASOURCE_USERNAME: neohub
+      SPRING_DATASOURCE_PASSWORD: neohub_dev
+      SPRING_REDIS_HOST: redis
+      SPRING_REDIS_PORT: 6379
+      SPRING_REDIS_PASSWORD: neohub_dev
+    volumes:
+      - ./backend/plugin-service:/app
+      - maven_cache:/root/.m2
+    networks:
+      - neohub-net
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # ── User Service (Spring Boot) ───────────────
+  user-service:
+    build:
+      context: ./backend/user-service
+      dockerfile: Dockerfile.dev
+    container_name: neohub-user-service
+    restart: unless-stopped
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SERVER_PORT: 8082
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/neohub
+      SPRING_DATASOURCE_USERNAME: neohub
+      SPRING_DATASOURCE_PASSWORD: neohub_dev
+      JWT_SECRET: dev_jwt_secret_change_in_production_min_32_chars
+      GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID:-your_github_client_id}
+      GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET:-your_github_client_secret}
+    volumes:
+      - ./backend/user-service:/app
+      - maven_cache:/root/.m2
+    networks:
+      - neohub-net
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # ── Scraper Service (Spring Boot) ────────────
+  scraper-service:
+    build:
+      context: ./backend/scraper-service
+      dockerfile: Dockerfile.dev
+    container_name: neohub-scraper-service
+    restart: unless-stopped
+    ports:
+      - "8083:8083"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SERVER_PORT: 8083
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/neohub
+      SPRING_DATASOURCE_USERNAME: neohub
+      SPRING_DATASOURCE_PASSWORD: neohub_dev
+      GITHUB_TOKEN: ${GITHUB_TOKEN:-your_github_pat_token}
+    volumes:
+      - ./backend/scraper-service:/app
+      - maven_cache:/root/.m2
+    networks:
+      - neohub-net
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # ── Angular Frontend ─────────────────────────
+  # frontend:
+  #   build:
+  #     context: ./frontend
+  #     dockerfile: Dockerfile.dev
+  #   container_name: neohub-frontend
+  #   restart: unless-stopped
+  #   ports:
+  #     - "4200:4200"
+  #   environment:
+  #     - NODE_ENV=development
+  #   volumes:
+  #     - ./frontend:/app
+  #     - node_modules_cache:/app/node_modules
+  #   networks:
+  #     - neohub-net
+  #   depends_on:
+  #     - api-gateway

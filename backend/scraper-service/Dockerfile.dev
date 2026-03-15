@@ -1,0 +1,20 @@
+# ─────────────────────────────────────────────────
+#  Dev Dockerfile — Spring Boot with hot reload
+#  Uses spring-boot-devtools for live restart
+# ─────────────────────────────────────────────────
+FROM maven:3.9-eclipse-temurin-21-alpine
+
+WORKDIR /app
+
+# Copy pom.xml first for layer caching
+COPY pom.xml .
+RUN mvn dependency:go-offline -q
+
+# Copy source
+COPY src ./src
+
+# Expose port (overridden per service via SERVER_PORT env)
+EXPOSE 8080
+
+# Run with devtools for hot reload
+CMD ["mvn", "spring-boot:run", "-Dspring-boot.run.jvmArguments=-Dspring.devtools.restart.enabled=true"]

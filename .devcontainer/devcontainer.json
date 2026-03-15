@@ -1,0 +1,84 @@
+{
+  "name": "NeoHub Dev Environment",
+  "dockerComposeFile": [
+    "../docker-compose.yml",
+    "docker-compose.devcontainer.yml"
+  ],
+  "service": "devcontainer",
+  "workspaceFolder": "/workspace",
+  "shutdownAction": "stopCompose",
+
+  "features": {
+    "ghcr.io/devcontainers/features/java:1": {
+      "version": "21",
+      "installMaven": true,
+      "installGradle": false
+    },
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "20"
+    },
+    "ghcr.io/devcontainers/features/go:1": {
+      "version": "1.22"
+    },
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+    "ghcr.io/devcontainers/features/git:1": {}
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "vscjava.vscode-java-pack",
+        "vmware.vscode-spring-boot",
+        "vscjava.vscode-spring-initializr",
+        "angular.ng-template",
+        "golang.go",
+        "ms-azuretools.vscode-docker",
+        "mtxr.sqltools",
+        "mtxr.sqltools-driver-pg",
+        "humao.rest-client",
+        "42crunch.vscode-openapi",
+        "esbenp.prettier-vscode",
+        "dbaeumer.vscode-eslint",
+        "eamodio.gitlens",
+        "usernamehw.errorlens",
+        "PKief.material-icon-theme"
+      ],
+      "settings": {
+        "java.configuration.updateBuildConfiguration": "automatic",
+        "java.compile.nullAnalysis.mode": "automatic",
+        "spring-boot.ls.java.home": "/usr/local/sdkman/candidates/java/current",
+        "go.toolsManagement.autoUpdate": true,
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "[java]": {
+          "editor.defaultFormatter": "redhat.java"
+        },
+        "sqltools.connections": [
+          {
+            "name": "NeoHub Local DB",
+            "driver": "PostgreSQL",
+            "host": "postgres",
+            "port": 5432,
+            "database": "neohub",
+            "username": "neohub",
+            "password": "neohub_dev"
+          }
+        ]
+      }
+    }
+  },
+
+  "forwardPorts": [4200, 8080, 8081, 8082, 8083, 5432, 6379],
+  "portsAttributes": {
+    "4200": { "label": "Angular Frontend" },
+    "8080": { "label": "API Gateway" },
+    "8081": { "label": "Plugin Service" },
+    "8082": { "label": "User Service" },
+    "8083": { "label": "Scraper Service" },
+    "5432": { "label": "PostgreSQL" },
+    "6379": { "label": "Redis" }
+  },
+
+  "postCreateCommand": "bash /workspace/scripts/setup.sh",
+  "remoteUser": "vscode"
+}

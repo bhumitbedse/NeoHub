@@ -1,0 +1,11 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+RUN npm install -g @angular/cli@17
+
+EXPOSE 4200
+
+# package.json will be available after ng new runs
+# Start script handles initialization if needed
+CMD ["sh", "-c", "if [ -f package.json ]; then npm install && ng serve --host 0.0.0.0 --poll 2000; else echo 'Run: docker exec -it neohub-frontend ng new . --skip-git' && sleep infinity; fi"]
