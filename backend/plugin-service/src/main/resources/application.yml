@@ -6,6 +6,11 @@ spring:
     username: ${SPRING_DATASOURCE_USERNAME:neohub}
     password: ${SPRING_DATASOURCE_PASSWORD:neohub_dev}
     driver-class-name: org.postgresql.Driver
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    baseline-version: 0
   jpa:
     hibernate:
       ddl-auto: validate

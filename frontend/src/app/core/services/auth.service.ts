@@ -1,8 +1,7 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
-import { environment } from '../../../environments/environment';
-import { ApiService } from './api.service';
+import { Injectable } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { BehaviorSubject, Observable, tap } from "rxjs";
+import { environment } from "../../../environments/environment";
 
 export interface User {
   id: string;
@@ -14,14 +13,14 @@ export interface User {
   role: string;
 }
 
-@Injectable({ providedIn: 'root' })
+@Injectable({ providedIn: "root" })
 export class AuthService {
-
+  private base = environment.apiUrl;
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   currentUser$ = this.currentUserSubject.asObservable();
 
-  constructor(private api: ApiService) {
-    // Restore user from localStorage on app init
+  // Use HttpClient directly — NOT ApiService, to avoid circular dependency
+  constructor(private http: HttpClient) {
     this.loadUserFromStorage();
   }
 
@@ -34,44 +33,48 @@ export class AuthService {
   }
 
   getToken(): string | null {
-    return localStorage.getItem('neohub_token');
+    return localStorage.getItem("neohub_token");
   }
 
   loginWithCode(code: string): Observable<any> {
-    return this.api.post<any>(`/auth/github?code=${code}`, {}).pipe(
-      tap(response => {
-        localStorage.setItem('neohub_token', response.accessToken);
-        this.currentUserSubject.next(response.user);
-      })
-    );
+    return this.http
+      .post<any>(`${this.base}/auth/github?code=${code}`, {})
+      .pipe(
+        tap((response) => {
+          localStorage.setItem("neohub_token", response.accessToken);
+          this.currentUserSubject.next(response.user);
+        }),
+      );
   }
 
   getMe(): Observable<User> {
-    return this.api.get<User>('/auth/me').pipe(
-      tap(user => this.currentUserSubject.next(user))
-    );
+    const token = this.getToken();
+    return this.http
+      .get<User>(`${this.base}/auth/me`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .pipe(tap((user) => this.currentUserSubject.next(user)));
   }
 
   logout(): void {
-    localStorage.removeItem('neohub_token');
+    localStorage.removeItem("neohub_token");
     this.currentUserSubject.next(null);
   }
 
   redirectToGitHub(): void {
     const params = new URLSearchParams({
       client_id: environment.githubClientId,
-      scope: 'read:user,user:email',
-      redirect_uri: 'http://localhost:4200/auth/callback'
+      scope: "read:user,user:email",
+      redirect_uri: "http://localhost:4200/auth/callback",
     });
-    window.location.href =
-      `https://github.com/login/oauth/authorize?${params}`;
+    window.location.href = `https://github.com/login/oauth/authorize?${params}`;
   }
 
   private loadUserFromStorage(): void {
     const token = this.getToken();
     if (token) {
       this.getMe().subscribe({
-        error: () => this.logout() // Token expired
+        error: () => this.logout(),
       });
     }
   }

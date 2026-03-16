@@ -25,7 +25,6 @@ public class PluginService {
                 .map(this::toSummaryDto);
     }
 
-    @Cacheable(value = "plugin", key = "#slug")
     public PluginDetailDto getBySlug(String slug) {
         Plugin plugin = pluginRepository.findBySlug(slug)
                 .orElseThrow(() -> new ResponseStatusException(

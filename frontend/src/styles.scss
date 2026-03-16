@@ -1,4 +1,4 @@
-@import '@angular/material/prebuilt-themes/purple-green.css';
+@import "@angular/material/prebuilt-themes/purple-green.css";
 
 * {
   margin: 0;
@@ -7,7 +7,7 @@
 }
 
 body {
-  font-family: 'Inter', 'Segoe UI', sans-serif;
+  font-family: "Inter", "Segoe UI", sans-serif;
   background-color: #0f1117;
   color: #e2e8f0;
 }
@@ -26,7 +26,9 @@ body {
 a {
   color: #7c8cff;
   text-decoration: none;
-  &:hover { text-decoration: underline; }
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 .container {
