@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { ApiService } from './api.service';
+import { Injectable } from "@angular/core";
+import { Observable } from "rxjs";
+import { ApiService } from "./api.service";
 
 export interface Plugin {
   id: string;
@@ -50,19 +50,32 @@ export interface Category {
   icon: string;
 }
 
-@Injectable({ providedIn: 'root' })
+@Injectable({ providedIn: "root" })
 export class PluginService {
-
   constructor(private api: ApiService) {}
 
-  getPlugins(page = 0, size = 20, sortBy = 'githubStars'): Observable<PageResponse<Plugin>> {
-    return this.api.get<PageResponse<Plugin>>('/plugins', { page, size, sortBy });
+  getPlugins(
+    page = 0,
+    size = 20,
+    sortBy = "githubStars",
+  ): Observable<PageResponse<Plugin>> {
+    return this.api.get<PageResponse<Plugin>>("/plugins", {
+      page,
+      size,
+      sortBy,
+    });
   }
 
-  searchPlugins(query?: string, category?: string, page = 0, size = 20): Observable<PageResponse<Plugin>> {
-    return this.api.get<PageResponse<Plugin>>('/plugins/search', {
-      q: query, category, page, size
-    });
+  searchPlugins(
+    query?: string,
+    category?: string,
+    page = 0,
+    size = 20,
+  ): Observable<PageResponse<Plugin>> {
+    const params: any = { page, size };
+    if (query && query.trim()) params["q"] = query.trim();
+    if (category && category.trim()) params["category"] = category.trim();
+    return this.api.get<PageResponse<Plugin>>("/plugins/search", params);
   }
 
   getPlugin(slug: string): Observable<PluginDetail> {
@@ -70,10 +83,13 @@ export class PluginService {
   }
 
   getCategories(): Observable<Category[]> {
-    return this.api.get<Category[]>('/categories');
+    return this.api.get<Category[]>("/categories");
   }
 
   getColorschemes(page = 0, size = 20): Observable<PageResponse<Plugin>> {
-    return this.api.get<PageResponse<Plugin>>('/plugins/colorschemes', { page, size });
+    return this.api.get<PageResponse<Plugin>>("/plugins/colorschemes", {
+      page,
+      size,
+    });
   }
 }

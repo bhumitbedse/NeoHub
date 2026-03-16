@@ -1,55 +1,69 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { PluginDetail, PluginService } from '../../../../core/services/plugin.service';
+import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
+import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
+import { marked } from "marked";
+import {
+  PluginDetail,
+  PluginService,
+} from "../../../../core/services/plugin.service";
 
 @Component({
-  selector: 'app-plugin-detail',
-  templateUrl: './plugin-detail.component.html',
-  styleUrls: ['./plugin-detail.component.scss']
+  selector: "app-plugin-detail",
+  templateUrl: "./plugin-detail.component.html",
+  styleUrls: ["./plugin-detail.component.scss"],
 })
 export class PluginDetailComponent implements OnInit {
-
   plugin: PluginDetail | null = null;
   loading = true;
-  activeTab = 0;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private pluginService: PluginService
+    private pluginService: PluginService,
+    private sanitizer: DomSanitizer,
   ) {}
 
   ngOnInit(): void {
-    const slug = this.route.snapshot.paramMap.get('slug');
-    if (!slug) { this.router.navigate(['/']); return; }
+    const slug = this.route.snapshot.paramMap.get("slug");
+    if (!slug) {
+      this.router.navigate(["/"]);
+      return;
+    }
 
     this.pluginService.getPlugin(slug).subscribe({
-      next: plugin => {
+      next: (plugin) => {
         this.plugin = plugin;
         this.loading = false;
       },
-      error: () => this.router.navigate(['/'])
+      error: () => this.router.navigate(["/"]),
     });
   }
 
+  renderMarkdown(content: string): SafeHtml {
+    if (!content) return "";
+    const html = marked.parse(content) as string;
+    return this.sanitizer.bypassSecurityTrustHtml(html);
+  }
+
   formatStars(stars: number): string {
-    if (stars >= 1000) return (stars / 1000).toFixed(1) + 'k';
-    return stars?.toString() ?? '0';
+    if (!stars) return "0";
+    if (stars >= 1000) return (stars / 1000).toFixed(1) + "k";
+    return stars.toString();
   }
 
   copyToClipboard(text: string): void {
     navigator.clipboard.writeText(text);
   }
 
-  getInstallSnippet(manager: 'lazy' | 'packer' | 'plug'): string {
-    if (!this.plugin) return '';
+  getInstallSnippet(manager: "lazy" | "packer" | "plug"): string {
+    if (!this.plugin) return "";
     const repo = this.plugin.fullName;
     switch (manager) {
-      case 'lazy':
+      case "lazy":
         return `{ '${repo}' }`;
-      case 'packer':
+      case "packer":
         return `use '${repo}'`;
-      case 'plug':
+      case "plug":
         return `Plug '${repo}'`;
     }
   }

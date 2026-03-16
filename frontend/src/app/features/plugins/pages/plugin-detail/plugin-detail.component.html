@@ -1,141 +1,165 @@
 <div class="container detail-page">
+  <app-loading-spinner *ngIf="loading"></app-loading-spinner>
 
-    <!-- Loading -->
-    <app-loading-spinner *ngIf="loading"></app-loading-spinner>
+  <ng-container *ngIf="!loading && plugin">
+    <!-- Back -->
+    <button mat-button class="back-btn" routerLink="/">
+      <mat-icon>arrow_back</mat-icon> Back to plugins
+    </button>
 
-    <ng-container *ngIf="!loading && plugin">
+    <!-- Hero -->
+    <div class="hero">
+      <div class="hero-left">
+        <div class="name-row">
+          <h1 class="plugin-name">{{ plugin.name }}</h1>
+          <mat-icon
+            *ngIf="plugin.isVerified"
+            class="verified-badge"
+            matTooltip="Verified"
+            >verified</mat-icon
+          >
+        </div>
+        <p class="full-name">{{ plugin.fullName }}</p>
+        <p class="description">{{ plugin.description }}</p>
 
-        <!-- Back -->
-        <button mat-button class="back-btn" routerLink="/">
-            <mat-icon>arrow_back</mat-icon> Back to plugins
-        </button>
-
-        <!-- Hero -->
-        <div class="hero">
-            <div class="hero-left">
-                <div class="name-row">
-                    <h1 class="plugin-name">{{ plugin.name }}</h1>
-                    <mat-icon *ngIf="plugin.isVerified" class="verified-badge" matTooltip="Verified">verified</mat-icon>
-                </div>
-                <p class="full-name">{{ plugin.fullName }}</p>
-                <p class="description">{{ plugin.description }}</p>
-
-                <div class="meta-row">
-                    <span class="meta-item">
-                        <mat-icon>star</mat-icon>
-                        {{ formatStars(plugin.githubStars) }} stars
-                    </span>
-                    <span class="meta-item">
-                        <mat-icon>call_split</mat-icon>
-                        {{ plugin.githubForks }} forks
-                    </span>
-                    <span class="meta-item" *ngIf="plugin.license">
-                        <mat-icon>gavel</mat-icon>
-                        {{ plugin.license }}
-                    </span>
-                    <span class="meta-item" *ngIf="plugin.categoryName">
-                        <mat-icon>category</mat-icon>
-                        {{ plugin.categoryName }}
-                    </span>
-                </div>
-
-                <div class="tags-row">
-                    <span *ngFor="let tag of plugin.tags" class="tag">{{ tag }}</span>
-                </div>
-            </div>
-
-            <div class="hero-actions">
-                <a [href]="plugin.githubUrl" target="_blank" mat-flat-button class="github-btn">
-                    <mat-icon>open_in_new</mat-icon>
-                    View on GitHub
-                </a>
-                <a *ngIf="plugin.homepageUrl" [href]="plugin.homepageUrl" target="_blank" mat-stroked-button
-                    class="docs-btn">
-                    <mat-icon>description</mat-icon>
-                    Documentation
-                </a>
-            </div>
+        <div class="meta-row">
+          <span class="meta-item">
+            <mat-icon>star</mat-icon>
+            {{ formatStars(plugin.githubStars) }} stars
+          </span>
+          <span class="meta-item">
+            <mat-icon>call_split</mat-icon>
+            {{ plugin.githubForks }} forks
+          </span>
+          <span class="meta-item" *ngIf="plugin.license">
+            <mat-icon>gavel</mat-icon>
+            {{ plugin.license }}
+          </span>
+          <span class="meta-item" *ngIf="plugin.categoryName">
+            <mat-icon>category</mat-icon>
+            {{ plugin.categoryName }}
+          </span>
         </div>
 
-        <!-- Quick install snippets -->
-        <div class="install-quick">
-            <h2 class="section-title">Quick Install</h2>
-            <mat-tab-group class="install-tabs">
-
-                <mat-tab label="lazy.nvim">
-                    <div class="code-block">
-                        <pre><code>{{ getInstallSnippet('lazy') }}</code></pre>
-                        <button mat-icon-button matTooltip="Copy" (click)="copyToClipboard(getInstallSnippet('lazy'))">
-                            <mat-icon>content_copy</mat-icon>
-                        </button>
-                    </div>
-                </mat-tab>
-
-                <mat-tab label="packer.nvim">
-                    <div class="code-block">
-                        <pre><code>{{ getInstallSnippet('packer') }}</code></pre>
-                        <button mat-icon-button matTooltip="Copy"
-                            (click)="copyToClipboard(getInstallSnippet('packer'))">
-                            <mat-icon>content_copy</mat-icon>
-                        </button>
-                    </div>
-                </mat-tab>
-
-                <mat-tab label="vim-plug">
-                    <div class="code-block">
-                        <pre><code>{{ getInstallSnippet('plug') }}</code></pre>
-                        <button mat-icon-button matTooltip="Copy" (click)="copyToClipboard(getInstallSnippet('plug'))">
-                            <mat-icon>content_copy</mat-icon>
-                        </button>
-                    </div>
-                </mat-tab>
-
-            </mat-tab-group>
+        <div class="tags-row">
+          <span *ngFor="let tag of plugin.tags" class="tag">{{ tag }}</span>
         </div>
+      </div>
 
-        <!-- README sections -->
-        <div class="readme-sections">
+      <div class="hero-actions">
+        <a
+          [href]="plugin.githubUrl"
+          target="_blank"
+          mat-flat-button
+          class="github-btn"
+        >
+          <mat-icon>open_in_new</mat-icon>
+          View on GitHub
+        </a>
+        <a
+          *ngIf="plugin.homepageUrl"
+          [href]="plugin.homepageUrl"
+          target="_blank"
+          mat-stroked-button
+          class="docs-btn"
+        >
+          <mat-icon>description</mat-icon>
+          Documentation
+        </a>
+      </div>
+    </div>
 
-            <div *ngIf="plugin.installGuide" class="readme-section">
-                <h2 class="section-title">
-                    <mat-icon>download</mat-icon>
-                    Installation Guide
-                </h2>
-                <div class="readme-content">
-                    <pre>{{ plugin.installGuide }}</pre>
-                </div>
-            </div>
+    <!-- Quick Install -->
+    <div class="install-quick">
+      <h2 class="section-title">Quick Install</h2>
+      <mat-tab-group class="install-tabs">
+        <mat-tab label="lazy.nvim">
+          <div class="code-block">
+            <pre><code>{{ getInstallSnippet('lazy') }}</code></pre>
+            <button
+              mat-icon-button
+              matTooltip="Copy"
+              (click)="copyToClipboard(getInstallSnippet('lazy'))"
+            >
+              <mat-icon>content_copy</mat-icon>
+            </button>
+          </div>
+        </mat-tab>
 
-            <div *ngIf="plugin.configExample" class="readme-section">
-                <h2 class="section-title">
-                    <mat-icon>settings</mat-icon>
-                    Configuration
-                </h2>
-                <div class="readme-content">
-                    <pre>{{ plugin.configExample }}</pre>
-                </div>
-            </div>
+        <mat-tab label="packer.nvim">
+          <div class="code-block">
+            <pre><code>{{ getInstallSnippet('packer') }}</code></pre>
+            <button
+              mat-icon-button
+              matTooltip="Copy"
+              (click)="copyToClipboard(getInstallSnippet('packer'))"
+            >
+              <mat-icon>content_copy</mat-icon>
+            </button>
+          </div>
+        </mat-tab>
 
-            <div *ngIf="plugin.keymapsSection" class="readme-section">
-                <h2 class="section-title">
-                    <mat-icon>keyboard</mat-icon>
-                    Keymaps
-                </h2>
-                <div class="readme-content">
-                    <pre>{{ plugin.keymapsSection }}</pre>
-                </div>
-            </div>
+        <mat-tab label="vim-plug">
+          <div class="code-block">
+            <pre><code>{{ getInstallSnippet('plug') }}</code></pre>
+            <button
+              mat-icon-button
+              matTooltip="Copy"
+              (click)="copyToClipboard(getInstallSnippet('plug'))"
+            >
+              <mat-icon>content_copy</mat-icon>
+            </button>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </div>
 
-            <!-- Fallback if nothing scraped yet -->
-            <div *ngIf="!plugin.installGuide && !plugin.configExample" class="not-scraped">
-                <mat-icon>sync</mat-icon>
-                <p>Full documentation coming soon — check the
-                    <a [href]="plugin.githubUrl" target="_blank">GitHub repository</a>
-                    in the meantime.
-                </p>
-            </div>
+    <!-- README sections -->
+    <div class="readme-sections">
+      <div *ngIf="plugin.installGuide" class="readme-section">
+        <h2 class="section-title">
+          <mat-icon>download</mat-icon>
+          Installation Guide
+        </h2>
+        <div
+          class="markdown-body"
+          [innerHTML]="renderMarkdown(plugin.installGuide)"
+        ></div>
+      </div>
 
-        </div>
+      <div *ngIf="plugin.configExample" class="readme-section">
+        <h2 class="section-title">
+          <mat-icon>settings</mat-icon>
+          Configuration
+        </h2>
+        <div
+          class="markdown-body"
+          [innerHTML]="renderMarkdown(plugin.configExample)"
+        ></div>
+      </div>
 
-    </ng-container>
+      <div *ngIf="plugin.keymapsSection" class="readme-section">
+        <h2 class="section-title">
+          <mat-icon>keyboard</mat-icon>
+          Keymaps
+        </h2>
+        <div
+          class="markdown-body"
+          [innerHTML]="renderMarkdown(plugin.keymapsSection)"
+        ></div>
+      </div>
+
+      <div
+        *ngIf="!plugin.installGuide && !plugin.configExample"
+        class="not-scraped"
+      >
+        <mat-icon>sync</mat-icon>
+        <p>
+          Full documentation coming soon — check the
+          <a [href]="plugin.githubUrl" target="_blank">GitHub repository</a>
+          in the meantime.
+        </p>
+      </div>
+    </div>
+  </ng-container>
 </div>

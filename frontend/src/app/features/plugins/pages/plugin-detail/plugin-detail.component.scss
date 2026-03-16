@@ -7,8 +7,9 @@
   color: #475569 !important;
   margin-bottom: 24px;
   margin-left: -8px;
-
-  mat-icon { font-size: 18px; }
+  mat-icon {
+    font-size: 18px;
+  }
 }
 
 .hero {
@@ -29,51 +30,51 @@
 }
 
 .plugin-name {
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 700;
   color: #e2e8f0;
 }
 
 .full-name {
-  font-size: 13px;
+  font-size: 12px;
   color: #475569;
-  font-family: monospace;
+  font-family: "JetBrains Mono", monospace;
   margin-bottom: 12px;
 }
 
 .description {
-  font-size: 15px;
+  font-size: 14px;
   color: #94a3b8;
   line-height: 1.6;
-  margin-bottom: 20px;
-  max-width: 600px;
+  margin-bottom: 16px;
+  max-width: 580px;
 }
 
 .meta-row {
   display: flex;
-  gap: 20px;
+  gap: 16px;
   flex-wrap: wrap;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
 .meta-item {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 13px;
+  gap: 4px;
+  font-size: 12px;
   color: #64748b;
 
   mat-icon {
-    font-size: 16px;
-    width: 16px;
-    height: 16px;
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
     color: #f59e0b;
   }
 }
 
 .tags-row {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   flex-wrap: wrap;
 }
 
@@ -82,32 +83,35 @@
   color: #7c8cff;
   border: 1px solid #2d3154;
   border-radius: 4px;
-  padding: 3px 10px;
-  font-size: 12px;
+  padding: 2px 8px;
+  font-size: 11px;
 }
 
 .hero-actions {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  min-width: 160px;
+  gap: 8px;
+  min-width: 150px;
+  flex-shrink: 0;
 
   .github-btn {
     background: #7c8cff !important;
     color: #fff !important;
+    font-size: 13px !important;
   }
 
   .docs-btn {
     border-color: #2d3154 !important;
     color: #e2e8f0 !important;
+    font-size: 13px !important;
   }
 }
 
 .section-title {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
   color: #e2e8f0;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -119,13 +123,13 @@
 }
 
 .install-quick {
-  margin-bottom: 40px;
+  margin-bottom: 36px;
 }
 
 .install-tabs {
   background: #13151f;
   border: 1px solid #1e2235;
-  border-radius: 10px;
+  border-radius: 8px;
   overflow: hidden;
 }
 
@@ -134,62 +138,56 @@
   align-items: center;
   justify-content: space-between;
   background: #0d0f18;
-  padding: 16px 20px;
+  padding: 14px 18px;
 
   pre {
     margin: 0;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: "JetBrains Mono", monospace;
     font-size: 14px;
     color: #7c8cff;
   }
 
   button {
     color: #475569 !important;
-    &:hover { color: #7c8cff !important; }
+    &:hover {
+      color: #7c8cff !important;
+    }
   }
 }
 
 .readme-sections {
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 24px;
 }
 
 .readme-section {
   background: #13151f;
   border: 1px solid #1e2235;
-  border-radius: 10px;
-  padding: 24px;
-}
-
-.readme-content {
-  pre {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    color: #94a3b8;
-    white-space: pre-wrap;
-    word-break: break-word;
-    line-height: 1.7;
-    margin: 0;
-  }
+  border-radius: 8px;
+  padding: 20px;
 }
 
 .not-scraped {
   text-align: center;
-  padding: 48px;
+  padding: 40px;
   color: #475569;
   background: #13151f;
   border: 1px solid #1e2235;
-  border-radius: 10px;
+  border-radius: 8px;
 
   mat-icon {
-    font-size: 36px;
-    width: 36px;
-    height: 36px;
-    margin-bottom: 12px;
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+    margin-bottom: 10px;
+    display: block;
   }
 
-  p { font-size: 14px; line-height: 1.6; }
+  p {
+    font-size: 13px;
+    line-height: 1.6;
+  }
 }
 
 // Material tab dark theme
@@ -198,9 +196,6 @@
     .mat-mdc-tab-header {
       background: #13151f;
       border-bottom: 1px solid #1e2235;
-    }
-    .mat-mdc-tab-label-container {
-      background: #13151f;
     }
     .mdc-tab__text-label {
       color: #64748b !important;

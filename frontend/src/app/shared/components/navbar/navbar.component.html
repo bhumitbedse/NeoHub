@@ -1,59 +1,74 @@
 <mat-toolbar class="navbar">
-    <div class="container navbar-inner">
+  <div class="container navbar-inner">
+    <a routerLink="/" class="logo">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+        <path
+          d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"
+          stroke="#58a6ff"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+      <span class="logo-text">NeoHub</span>
+    </a>
 
-        <a routerLink="/" class="logo">
-            <span class="logo-icon">󱎦</span>
-            <span class="logo-text">NeoHub</span>
-        </a>
-
-        <div class="nav-links">
-            <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-                Plugins
-            </a>
-            <a routerLink="/themes" routerLinkActive="active">
-                Themes
-            </a>
-            <a routerLink="/configs" routerLinkActive="active">
-                Configs
-            </a>
-        </div>
-
-        <div class="nav-actions">
-            <!-- Search -->
-            <button mat-icon-button>
-                <mat-icon>search</mat-icon>
-            </button>
-
-            <!-- Logged out -->
-            <button *ngIf="!currentUser" mat-stroked-button class="login-btn" (click)="login()">
-                <mat-icon>code</mat-icon>
-                Sign in with GitHub
-            </button>
-
-            <!-- Logged in -->
-            <div *ngIf="currentUser" class="user-menu">
-                <button mat-icon-button [matMenuTriggerFor]="userMenu">
-                    <img [src]="currentUser.avatarUrl" [alt]="currentUser.username" class="avatar">
-                </button>
-                <mat-menu #userMenu="matMenu">
-                    <div class="menu-header">
-                        <strong>{{ currentUser.displayName }}</strong>
-                        <span class="username">&#64;{{ currentUser.username }}</span>
-                    </div>
-                    <mat-divider></mat-divider>
-                    <button mat-menu-item routerLink="/profile">
-                        <mat-icon>person</mat-icon> Profile
-                    </button>
-                    <button mat-menu-item routerLink="/configs/new">
-                        <mat-icon>add</mat-icon> Share Config
-                    </button>
-                    <mat-divider></mat-divider>
-                    <button mat-menu-item (click)="logout()">
-                        <mat-icon>logout</mat-icon> Sign out
-                    </button>
-                </mat-menu>
-            </div>
-        </div>
-
+    <div class="nav-links">
+      <a
+        routerLink="/"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        Plugins
+      </a>
+      <a routerLink="/themes" routerLinkActive="active"> Themes </a>
+      <a routerLink="/configs" routerLinkActive="active"> Configs </a>
     </div>
+
+    <div class="nav-actions">
+      <!-- Search -->
+      <button mat-icon-button>
+        <mat-icon>search</mat-icon>
+      </button>
+
+      <!-- Logged out -->
+      <button
+        *ngIf="!currentUser"
+        mat-stroked-button
+        class="login-btn"
+        (click)="login()"
+      >
+        <mat-icon>code</mat-icon>
+        Sign in with GitHub
+      </button>
+
+      <!-- Logged in -->
+      <div *ngIf="currentUser" class="user-menu">
+        <button mat-icon-button [matMenuTriggerFor]="userMenu">
+          <img
+            [src]="currentUser.avatarUrl"
+            [alt]="currentUser.username"
+            class="avatar"
+          />
+        </button>
+        <mat-menu #userMenu="matMenu">
+          <div class="menu-header">
+            <strong>{{ currentUser.displayName }}</strong>
+            <span class="username">&#64;{{ currentUser.username }}</span>
+          </div>
+          <mat-divider></mat-divider>
+          <button mat-menu-item routerLink="/profile">
+            <mat-icon>person</mat-icon> Profile
+          </button>
+          <button mat-menu-item routerLink="/configs/new">
+            <mat-icon>add</mat-icon> Share Config
+          </button>
+          <mat-divider></mat-divider>
+          <button mat-menu-item (click)="logout()">
+            <mat-icon>logout</mat-icon> Sign out
+          </button>
+        </mat-menu>
+      </div>
+    </div>
+  </div>
 </mat-toolbar>

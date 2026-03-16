@@ -31,17 +31,18 @@ public interface PluginRepository extends JpaRepository<Plugin, UUID> {
             """, nativeQuery = true)
     Page<Plugin> searchPlugins(@Param("query") String query, Pageable pageable);
 
-    // Filter by category + search combined
+        // Filter by category + search combined
     @Query(value = """
-            SELECT p.* FROM plugins p
-            JOIN categories c ON p.category_id = c.id
-            WHERE p.is_active = true
-            AND (:categorySlug IS NULL OR c.slug = :categorySlug)
-            AND (:query IS NULL OR p.search_vector @@ plainto_tsquery('english', :query))
-            ORDER BY p.github_stars DESC
-            """, nativeQuery = true)
-    Page<Plugin> filterPlugins(
-            @Param("query") String query,
-            @Param("categorySlug") String categorySlug,
-            Pageable pageable);
+        SELECT p.* FROM plugins p
+        JOIN categories c ON p.category_id = c.id
+        WHERE p.is_active = true
+        AND (:categorySlug IS NULL OR :categorySlug = '' OR c.slug = :categorySlug)
+        AND (:query IS NULL OR :query = '' OR p.search_vector @@ plainto_tsquery('english', :query))
+        ORDER BY p.github_stars DESC
+        """, nativeQuery = true)
+        Page<Plugin> filterPlugins(
+        @Param("query") String query,
+        @Param("categorySlug") String categorySlug,
+        Pageable pageable
+    );
 }
