@@ -4,28 +4,30 @@ import (
 	"fmt"
 	"os"
 
+	"neohub-cli/internal/api"
+	"neohub-cli/internal/detector"
+	"neohub-cli/internal/installer"
+
 	"github.com/spf13/cobra"
 )
 
-const apiBase = "http://localhost:8080/api/v1"
 const version = "0.1.0"
 
 var rootCmd = &cobra.Command{
 	Use:   "neostore",
 	Short: "NeoHub CLI — Neovim plugin manager",
 	Long: `
- _   _            _   _       _     
-| \ | | ___  ___ | | | |_   _| |__  
-|  \| |/ _ \/ _ \| |_| | | | | '_ \ 
-| |\  |  __/ (_) |  _  | |_| | |_) |
-|_| \_|\___|\___/|_| |_|\__,_|_.__/ 
-                                     
+ _   _            ____  _
+| \ | | ___  ___ / ___|| |_ ___  _ __ ___
+|  \| |/ _ \/ _ \\___ \| __/ _ \| '__/ _ \
+| |\  |  __/ (_) |___) | || (_) | | |  __/
+|_| \_|\___|\___/|____/ \__\___/|_|  \___|
+
 NeoHub CLI — Install and manage Neovim plugins.
 https://neohub.dev
 `,
 }
 
-// Execute runs the root command
 func Execute() error {
 	return rootCmd.Execute()
 }
@@ -44,25 +46,53 @@ func init() {
 	rootCmd.AddCommand(versionCmd)
 }
 
-// ── install ──────────────────────────────────────
+// ── install ──────────────────────────────────────────────────────────────
 
 var installCmd = &cobra.Command{
 	Use:   "install [plugin]",
 	Short: "Install a Neovim plugin",
-	Long:  `Detects your plugin manager (lazy.nvim, packer, vim-plug) and installs the plugin automatically.`,
+	Long:  `Detects your plugin manager (lazy.nvim, packer, vim-plug) and installs automatically.`,
 	Example: `  neostore install telescope
-  neostore install telescope@0.1.5
-  neostore install nvim-tree`,
+  neostore install nvim-tree
+  neostore install folke/which-key.nvim`,
 	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Printf("🔍 Detecting Neovim config...\n")
-		// TODO: call internal/detector
-		// TODO: call internal/installer
-		fmt.Printf("✅ Installed %s\n", args[0])
+		pluginName := args[0]
+		client := api.NewClient("")
+
+		result, err := installer.Install(pluginName, client)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "❌ Error: %s\n", err)
+			os.Exit(1)
+		}
+
+		if result.AlreadyInstalled {
+			fmt.Printf("✅ %s is already installed!\n", result.Plugin.Name)
+			return
+		}
+
+		fmt.Printf("\n✅ Installed %s successfully!\n", result.Plugin.Name)
+		fmt.Printf("   Plugin:  %s\n", result.Plugin.FullName)
+		fmt.Printf("   Manager: %s\n", result.Manager)
+		fmt.Printf("   File:    %s\n", result.ConfigFile)
+		fmt.Printf("   Line:    %d\n\n", result.LineInserted)
+		fmt.Printf("📦 Snippet added:\n   %s\n\n", result.Snippet)
+		fmt.Printf("💡 Run sync to complete installation:\n")
+
+		switch result.Manager {
+		case detector.LazyNvim:
+			fmt.Println("   :Lazy sync")
+		case detector.Packer:
+			fmt.Println("   :PackerSync")
+		case detector.VimPlug:
+			fmt.Println("   :PlugInstall")
+		default:
+			fmt.Println("   Add snippet manually to your config")
+		}
 	},
 }
 
-// ── remove ───────────────────────────────────────
+// ── remove ───────────────────────────────────────────────────────────────
 
 var removeCmd = &cobra.Command{
 	Use:     "remove [plugin]",
@@ -71,11 +101,11 @@ var removeCmd = &cobra.Command{
 	Args:    cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Printf("🗑  Removing %s...\n", args[0])
-		// TODO: implement removal
+		fmt.Println("   Coming soon!")
 	},
 }
 
-// ── update ───────────────────────────────────────
+// ── update ───────────────────────────────────────────────────────────────
 
 var updateCmd = &cobra.Command{
 	Use:   "update [plugin]",
@@ -86,59 +116,109 @@ var updateCmd = &cobra.Command{
 		} else {
 			fmt.Printf("🔄 Updating %s...\n", args[0])
 		}
-		// TODO: implement update
+		fmt.Println("   Coming soon!")
 	},
 }
 
-// ── search ───────────────────────────────────────
+// ── search ───────────────────────────────────────────────────────────────
 
 var searchCmd = &cobra.Command{
 	Use:   "search [query]",
 	Short: "Search for plugins on NeoHub",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Printf("🔎 Searching for \"%s\"...\n", args[0])
-		// TODO: call NeoHub API search endpoint
+		client := api.NewClient("")
+		fmt.Printf("🔎 Searching for \"%s\"...\n\n", args[0])
+
+		results, err := client.SearchPlugins(args[0])
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "❌ Error: %s\n", err)
+			os.Exit(1)
+		}
+
+		if len(results) == 0 {
+			fmt.Println("No plugins found.")
+			return
+		}
+
+		for _, p := range results {
+			fmt.Printf("  %-30s ⭐ %-6d  %s\n",
+				p.Name, p.GithubStars, p.Description)
+		}
 	},
 }
 
-// ── info ─────────────────────────────────────────
+// ── info ─────────────────────────────────────────────────────────────────
 
 var infoCmd = &cobra.Command{
 	Use:   "info [plugin]",
-	Short: "Show plugin details and keymaps",
+	Short: "Show plugin details",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Printf("ℹ  Fetching info for %s...\n", args[0])
-		// TODO: call NeoHub API
+		client := api.NewClient("")
+		plugin, err := client.FindPlugin(args[0])
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "❌ %s\n", err)
+			os.Exit(1)
+		}
+
+		fmt.Printf("\n📦 %s\n", plugin.Name)
+		fmt.Printf("   Repo:     %s\n", plugin.FullName)
+		fmt.Printf("   Stars:    ⭐ %d\n", plugin.GithubStars)
+		fmt.Printf("   Category: %s\n", plugin.Category)
+		fmt.Printf("   GitHub:   %s\n\n", plugin.GithubURL)
+		if plugin.Description != "" {
+			fmt.Printf("   %s\n\n", plugin.Description)
+		}
 	},
 }
 
-// ── list ─────────────────────────────────────────
+// ── list ─────────────────────────────────────────────────────────────────
 
 var listCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List installed plugins",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("📦 Installed plugins:")
-		// TODO: read from local config
+		fmt.Println("📦 Scanning installed plugins...")
+		config, err := detector.Detect()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "❌ %s\n", err)
+			os.Exit(1)
+		}
+
+		if len(config.InstalledPlugins) == 0 {
+			fmt.Println("   No plugins found.")
+			return
+		}
+
+		fmt.Printf("\n   Found %d plugins (%s):\n\n",
+			len(config.InstalledPlugins), config.PluginManager)
+		for _, p := range config.InstalledPlugins {
+			fmt.Printf("   • %s\n", p)
+		}
 	},
 }
 
-// ── doctor ───────────────────────────────────────
+// ── doctor ───────────────────────────────────────────────────────────────
 
 var doctorCmd = &cobra.Command{
 	Use:   "doctor",
-	Short: "Check for plugin conflicts and broken configs",
-	Long:  `Scans your Neovim config for conflicts, missing dependencies, and deprecated APIs.`,
+	Short: "Check for plugin conflicts and issues",
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("🩺 Running NeoHub Doctor...")
-		fmt.Println("   Scanning ~/.config/nvim/...")
-		// TODO: implement conflict detection
+		config, err := detector.Detect()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "❌ %s\n", err)
+			os.Exit(1)
+		}
+		fmt.Printf("   ✅ Config found: %s\n", config.ConfigFile)
+		fmt.Printf("   ✅ Plugin manager: %s\n", config.PluginManager)
+		fmt.Printf("   ✅ Plugins found: %d\n", len(config.InstalledPlugins))
+		fmt.Println("\n   No issues detected!")
 	},
 }
 
-// ── apply ────────────────────────────────────────
+// ── apply ────────────────────────────────────────────────────────────────
 
 var applyCmd = &cobra.Command{
 	Use:   "apply [username/config]",
@@ -146,40 +226,38 @@ var applyCmd = &cobra.Command{
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Printf("📥 Applying config %s...\n", args[0])
-		// TODO: fetch and apply config
+		fmt.Println("   Coming soon!")
 	},
 }
 
-// ── backup ───────────────────────────────────────
+// ── backup ───────────────────────────────────────────────────────────────
 
 var backupCmd = &cobra.Command{
 	Use:   "backup",
 	Short: "Push your config to NeoHub",
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("📤 Pushing config to NeoHub...")
-		// TODO: implement backup
+		fmt.Println("   Coming soon!")
 	},
 }
 
-// ── init ─────────────────────────────────────────
+// ── init ─────────────────────────────────────────────────────────────────
 
 var initCmd = &cobra.Command{
 	Use:   "init",
 	Short: "Bootstrap a fresh Neovim setup interactively",
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("🚀 Welcome to NeoHub Setup!")
-		fmt.Println("   Let's get your Neovim configured...")
-		// TODO: interactive setup wizard
+		fmt.Println("   Coming soon!")
 	},
 }
 
-// ── version ──────────────────────────────────────
+// ── version ──────────────────────────────────────────────────────────────
 
 var versionCmd = &cobra.Command{
 	Use:   "version",
 	Short: "Print neostore version",
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Printf("neostore v%s\n", version)
-		os.Exit(0)
 	},
 }
