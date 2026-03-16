@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/bhumitbedse/neohub/cli/cmd"
+	"neohub-cli/cmd"
 )
 
 func main() {
