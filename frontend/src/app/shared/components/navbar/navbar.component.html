@@ -1,57 +1,54 @@
 <mat-toolbar class="navbar">
   <div class="container navbar-inner">
+
+    <!-- Left: Logo -->
     <a routerLink="/" class="logo">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-        <path
-          d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"
-          stroke="#58a6ff"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"
+          stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
       <span class="logo-text">NeoHub</span>
     </a>
 
-    <div class="nav-links">
-      <a
-        routerLink="/"
-        routerLinkActive="active"
-        [routerLinkActiveOptions]="{ exact: true }"
-      >
-        Plugins
-      </a>
-      <a routerLink="/themes" routerLinkActive="active"> Themes </a>
-      <a routerLink="/configs" routerLinkActive="active"> Configs </a>
+    <!-- Center: Searchbar + Nav tabs -->
+    <div class="nav-center">
+      <!-- Integrated Searchbar -->
+      <div class="search-bar" (click)="openCommandPalette()">
+        <mat-icon class="search-icon">search</mat-icon>
+        <span class="search-placeholder">Search plugins, themes, configs...</span>
+        <div class="search-kbd-wrap">
+          <kbd class="search-kbd">⌘K</kbd>
+        </div>
+      </div>
+
+      <nav class="nav-links">
+        <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Plugins</a>
+        <a routerLink="/themes" routerLinkActive="active">Themes</a>
+        <a routerLink="/configs" routerLinkActive="active">Configs</a>
+      </nav>
     </div>
 
+    <!-- Right: Actions -->
     <div class="nav-actions">
-      <!-- Search -->
-      <button mat-icon-button>
-        <mat-icon>search</mat-icon>
+      <!-- Theme toggle -->
+      <button mat-icon-button class="icon-btn" (click)="toggleTheme()" [matTooltip]="themeService.isLightMode ? 'Dark mode' : 'Light mode'">
+        <mat-icon>{{ themeService.isLightMode ? 'dark_mode' : 'light_mode' }}</mat-icon>
       </button>
 
       <!-- Logged out -->
-      <button
-        *ngIf="!currentUser"
-        mat-stroked-button
-        class="login-btn"
-        (click)="login()"
-      >
-        <mat-icon>code</mat-icon>
-        Sign in with GitHub
+      <button *ngIf="!currentUser" class="login-btn" (click)="login()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0">
+          <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+        </svg>
+        Sign In
       </button>
 
-      <!-- Logged in -->
+      <!-- Logged in: avatar + dropdown -->
       <div *ngIf="currentUser" class="user-menu">
-        <button mat-icon-button [matMenuTriggerFor]="userMenu">
-          <img
-            [src]="currentUser.avatarUrl"
-            [alt]="currentUser.username"
-            class="avatar"
-          />
+        <button mat-icon-button [matMenuTriggerFor]="userMenu" class="avatar-btn">
+          <img [src]="currentUser.avatarUrl" [alt]="currentUser.username" class="avatar"/>
         </button>
-        <mat-menu #userMenu="matMenu">
+        <mat-menu #userMenu="matMenu" class="user-dropdown">
           <div class="menu-header">
             <strong>{{ currentUser.displayName }}</strong>
             <span class="username">&#64;{{ currentUser.username }}</span>
@@ -60,8 +57,14 @@
           <button mat-menu-item routerLink="/profile">
             <mat-icon>person</mat-icon> Profile
           </button>
+          <button mat-menu-item>
+            <mat-icon>bookmarks</mat-icon> My Collections
+          </button>
           <button mat-menu-item routerLink="/configs/new">
             <mat-icon>add</mat-icon> Share Config
+          </button>
+          <button mat-menu-item>
+            <mat-icon>settings</mat-icon> Settings
           </button>
           <mat-divider></mat-divider>
           <button mat-menu-item (click)="logout()">
@@ -70,5 +73,6 @@
         </mat-menu>
       </div>
     </div>
+
   </div>
 </mat-toolbar>
