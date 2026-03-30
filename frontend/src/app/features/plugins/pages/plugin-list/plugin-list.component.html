@@ -1,46 +1,84 @@
-<div class="container page-layout">
+<div class="page-wrapper">
+
+  <!-- Minimal Hero section -->
+  <div class="hero-section">
+    <div class="container">
+      <h1 class="hero-title">
+        Discover <span class="gradient-text">Neovim</span> Plugins
+      </h1>
+      <p class="hero-sub">{{ totalElements | number }} plugins, themes, and configurations indexed daily.</p>
+    </div>
+  </div>
+
+  <div class="container page-layout">
 
     <!-- Sidebar -->
     <aside class="sidebar-col">
-        <app-filter-sidebar (filterChanged)="onFilterChanged($event)">
-        </app-filter-sidebar>
+      <app-filter-sidebar (filterChanged)="onFilterChanged($event)"></app-filter-sidebar>
     </aside>
 
     <!-- Main content -->
     <main class="main-col">
 
-        <!-- Header -->
-        <div class="page-header">
-            <div>
-                <h1 class="page-title">Neovim Plugins</h1>
-                <p class="page-subtitle">
-                    {{ totalElements }} plugins available
-                </p>
-            </div>
+      <!-- Suggested Collections -->
+      <div class="collections-section fade-in-up">
+        <h2 class="section-title">Curated Collections</h2>
+        <div class="collections-grid">
+          <div class="collection-card" style="background: linear-gradient(135deg, rgba(99,102,241,0.08), rgba(168,85,247,0.08))">
+            <h3>🚀 Essential LSP Setup</h3>
+            <p>The definitive group of plugins for configuring language servers perfectly.</p>
+          </div>
+          <div class="collection-card" style="background: linear-gradient(135deg, rgba(16,185,129,0.08), rgba(59,130,246,0.08))">
+            <h3>🎨 Best Themes of 2025</h3>
+            <p>Top trending matte colorschemes to give your editor a fresh coat of paint.</p>
+          </div>
+          <div class="collection-card" style="background: linear-gradient(135deg, rgba(239,68,68,0.08), rgba(245,158,11,0.08))">
+            <h3>⚡ Git Integrations</h3>
+            <p>Master version control operations safely right from within Neovim.</p>
+          </div>
         </div>
+      </div>
 
-        <!-- Loading -->
-        <app-loading-spinner *ngIf="loading"></app-loading-spinner>
-
-        <!-- Grid -->
-        <div *ngIf="!loading" class="plugins-grid">
-            <app-plugin-card *ngFor="let plugin of plugins" [plugin]="plugin">
-            </app-plugin-card>
+      <!-- Sort toolbar -->
+      <div class="page-header">
+        <h2 class="page-title">Top Plugins</h2>
+        <div class="sort-toolbar">
+          <button class="sort-btn" [class.active]="currentFilter.sortBy === 'githubStars'" (click)="setSortBy('githubStars')">🔥 Trending</button>
+          <button class="sort-btn" [class.active]="currentFilter.sortBy === 'createdAt'"  (click)="setSortBy('createdAt')">🆕 Newest</button>
+          <button class="sort-btn" [class.active]="currentFilter.sortBy === 'name'"       (click)="setSortBy('name')">🔤 A–Z</button>
         </div>
+      </div>
 
-        <!-- Empty state -->
-        <div *ngIf="!loading && plugins.length === 0" class="empty-state">
-            <mat-icon>search_off</mat-icon>
-            <h3>No plugins found</h3>
-            <p>Try a different search or category</p>
+      <!-- Skeleton loading grid -->
+      <div class="plugins-grid" *ngIf="loading">
+        <div *ngFor="let i of [1,2,3,4,5,6]" class="fade-in-up" [ngStyle]="{'animation-delay': (i * 0.08) + 's'}">
+          <app-plugin-card-skeleton></app-plugin-card-skeleton>
         </div>
+      </div>
 
-        <!-- Load more -->
-        <div *ngIf="!loading && hasMore" class="load-more">
-            <button mat-stroked-button (click)="loadMore()">
-                Load more plugins
-            </button>
-        </div>
+      <!-- Plugins grid -->
+      <div *ngIf="!loading" class="plugins-grid">
+        <app-plugin-card *ngFor="let plugin of plugins; let i = index"
+          [plugin]="plugin"
+          [style.animation-delay]="(i * 30) + 'ms'"
+          class="fade-in-up">
+        </app-plugin-card>
+      </div>
+
+      <!-- Empty state -->
+      <div *ngIf="!loading && plugins.length === 0" class="empty-state">
+        <mat-icon>travel_explore</mat-icon>
+        <h3>No plugins found</h3>
+        <p>Try adjusting your search or filters</p>
+      </div>
+
+      <!-- Load more -->
+      <div *ngIf="!loading && hasMore" class="load-more">
+        <button mat-stroked-button (click)="loadMore()" class="load-more-btn">
+          View more plugins
+        </button>
+      </div>
 
     </main>
+  </div>
 </div>

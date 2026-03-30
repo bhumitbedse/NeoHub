@@ -1,66 +1,180 @@
+.page-wrapper { 
+  min-height: 100vh; 
+  background: var(--bg-page);
+}
+
+// ─── Hero (Minimalist) ────────────────────────────────────────────────────────
+.hero-section {
+  padding: 64px 0 40px;
+  text-align: left;
+}
+
+.hero-title {
+  font-size: 40px;
+  font-weight: 800;
+  letter-spacing: -1.5px;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+}
+
+.hero-sub {
+  font-size: 16px;
+  color: var(--text-secondary);
+  font-weight: 400;
+  max-width: 600px;
+}
+
+// ─── Layout ───────────────────────────────────────────────────────────────────
 .page-layout {
   display: grid;
-  grid-template-columns: 220px 1fr;
-  gap: 32px;
-  padding-top: 24px;
-  padding-bottom: 48px;
+  grid-template-columns: 240px 1fr;
+  gap: 48px;
+  padding-bottom: 80px;
   align-items: start;
 }
 
+// ─── Collections ──────────────────────────────────────────────────────────────
+.collections-section {
+  margin-bottom: 48px;
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 16px 0;
+}
+
+.collections-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.collection-card {
+  padding: 24px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: var(--transition);
+  
+  &:hover {
+    transform: translateY(-4px);
+    border-color: var(--border-accent);
+  }
+
+  h3 {
+    margin: 0 0 8px;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  p {
+    margin: 0;
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+}
+
+// ─── Header / Sort toolbar ────────────────────────────────────────────────────
 .page-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 16px;
 }
 
 .page-title {
-  font-size: 24px;
+  font-size: 18px;
   font-weight: 700;
-  color: #e2e8f0;
+  color: var(--text-primary);
+  margin: 0;
 }
 
-.page-subtitle {
+.sort-toolbar {
+  display: flex;
+  gap: 8px;
+}
+
+.sort-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-xl); // Very rounded pills
+  color: var(--text-muted);
   font-size: 13px;
-  color: #475569;
-  margin-top: 4px;
+  font-weight: 600;
+  padding: 6px 16px;
+  cursor: pointer;
+  transition: var(--transition);
+
+  &:hover { 
+    color: var(--text-primary); 
+    background: var(--bg-surface); 
+  }
+
+  &.active {
+    background: var(--bg-surface);
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+  }
 }
 
+// ─── Grid ─────────────────────────────────────────────────────────────────────
 .plugins-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 16px;
+  // Make cards slightly wider and give them more breathing room
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 20px;
 }
 
+// ─── Empty state ──────────────────────────────────────────────────────────────
 .empty-state {
   text-align: center;
-  padding: 80px 0;
-  color: #475569;
+  padding: 100px 0;
+  color: var(--text-muted);
 
   mat-icon {
     font-size: 48px;
     width: 48px;
     height: 48px;
     margin-bottom: 16px;
+    opacity: 0.3;
   }
 
-  h3 {
-    font-size: 18px;
-    color: #64748b;
-    margin-bottom: 8px;
-  }
-
-  p { font-size: 14px; }
+  h3 { font-size: 18px; color: var(--text-secondary); font-weight: 600; margin-bottom: 8px; }
+  p  { font-size: 14px; }
 }
 
+// ─── Load more ────────────────────────────────────────────────────────────────
 .load-more {
   display: flex;
   justify-content: center;
-  margin-top: 32px;
+  margin-top: 48px;
 
-  button {
-    border-color: #2d3154 !important;
-    color: #7c8cff !important;
+  .load-more-btn {
+    border: 1px solid var(--border) !important;
+    background: var(--bg-surface) !important;
+    color: var(--text-primary) !important;
     padding: 8px 32px !important;
+    border-radius: var(--radius-xl) !important; // Pill button
+    font-weight: 600 !important;
+    transition: var(--transition) !important;
+
+    &:hover { 
+      background: var(--bg-elevated) !important; 
+      border-color: var(--border-accent) !important;
+    }
   }
+}
+
+// ─── Responsive ───────────────────────────────────────────────────────────────
+@media (max-width: 768px) {
+  .hero-section { padding: 40px 0 24px; }
+  .hero-title   { font-size: 32px; }
+  .page-layout  { grid-template-columns: 1fr; gap: 32px; }
+  .sidebar-col  { display: none; }
 }

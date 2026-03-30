@@ -1,0 +1,52 @@
+<div class="cmd-overlay" *ngIf="isOpen" (click)="close()">
+  <div class="cmd-modal" (click)="$event.stopPropagation()">
+
+    <!-- Search Input -->
+    <div class="cmd-input-row">
+      <mat-icon class="cmd-search-icon">search</mat-icon>
+      <input
+        id="cmd-input"
+        class="cmd-input"
+        [(ngModel)]="query"
+        (input)="onQueryChange()"
+        placeholder="Search plugins, pages..."
+        autocomplete="off"
+      />
+      <kbd class="cmd-esc-badge" (click)="close()">ESC</kbd>
+    </div>
+
+    <!-- Results -->
+    <div class="cmd-results" *ngIf="results.length > 0">
+      <button
+        class="cmd-item"
+        *ngFor="let item of results; let i = index"
+        [class.active]="i === activeIndex"
+        (click)="select(item)"
+        (mouseenter)="activeIndex = i"
+      >
+        <span class="cmd-item-icon">
+          <mat-icon>{{ item.icon }}</mat-icon>
+        </span>
+        <span class="cmd-item-text">
+          <span class="cmd-item-label">{{ item.label }}</span>
+          <span class="cmd-item-sub" *ngIf="item.sub">{{ item.sub }}</span>
+        </span>
+        <span class="cmd-item-type">{{ item.type }}</span>
+      </button>
+    </div>
+
+    <!-- Empty -->
+    <div class="cmd-empty" *ngIf="results.length === 0 && query">
+      <mat-icon>search_off</mat-icon>
+      <p>No results for "<strong>{{ query }}</strong>"</p>
+    </div>
+
+    <!-- Footer hint -->
+    <div class="cmd-footer">
+      <span><kbd>↑</kbd><kbd>↓</kbd> navigate</span>
+      <span><kbd>↵</kbd> open</span>
+      <span><kbd>ESC</kbd> close</span>
+    </div>
+
+  </div>
+</div>

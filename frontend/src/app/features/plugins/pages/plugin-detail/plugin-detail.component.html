@@ -1,165 +1,156 @@
-<div class="container detail-page">
+<div class="detail-wrapper">
   <app-loading-spinner *ngIf="loading"></app-loading-spinner>
 
   <ng-container *ngIf="!loading && plugin">
-    <!-- Back -->
-    <button mat-button class="back-btn" routerLink="/">
-      <mat-icon>arrow_back</mat-icon> Back to plugins
-    </button>
 
     <!-- Hero -->
-    <div class="hero">
-      <div class="hero-left">
-        <div class="name-row">
-          <h1 class="plugin-name">{{ plugin.name }}</h1>
-          <mat-icon
-            *ngIf="plugin.isVerified"
-            class="verified-badge"
-            matTooltip="Verified"
-            >verified</mat-icon
-          >
-        </div>
-        <p class="full-name">{{ plugin.fullName }}</p>
-        <p class="description">{{ plugin.description }}</p>
+    <div class="hero-band">
+      <div class="container hero-content">
+        <button mat-button class="back-btn" routerLink="/">
+          <mat-icon>arrow_back</mat-icon> All Plugins
+        </button>
 
-        <div class="meta-row">
-          <span class="meta-item">
-            <mat-icon>star</mat-icon>
-            {{ formatStars(plugin.githubStars) }} stars
-          </span>
-          <span class="meta-item">
-            <mat-icon>call_split</mat-icon>
-            {{ plugin.githubForks }} forks
-          </span>
-          <span class="meta-item" *ngIf="plugin.license">
-            <mat-icon>gavel</mat-icon>
-            {{ plugin.license }}
-          </span>
-          <span class="meta-item" *ngIf="plugin.categoryName">
-            <mat-icon>category</mat-icon>
-            {{ plugin.categoryName }}
-          </span>
+        <div class="hero-main fade-in-up">
+          <div class="hero-left">
+            <div class="name-row">
+              <img *ngIf="plugin.fullName" [src]="'https://github.com/' + plugin.fullName.split('/')[0] + '.png'" class="author-avatar-lg" alt="Author" />
+              <h1 class="plugin-name">{{ plugin.name }}</h1>
+              <mat-icon *ngIf="plugin.isVerified" class="verified-badge" matTooltip="Verified">verified</mat-icon>
+              <span class="category-chip">{{ plugin.categoryName }}</span>
+            </div>
+            <p class="full-name mono">{{ plugin.fullName }}</p>
+            <p class="description">{{ plugin.description }}</p>
+
+            <div class="tags-row">
+              <span *ngFor="let tag of plugin.tags" class="tag">{{ tag }}</span>
+            </div>
+          </div>
+
+          <div class="hero-actions">
+            <a [href]="plugin.githubUrl" target="_blank" mat-flat-button class="github-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+              </svg>
+              View on GitHub
+            </a>
+            <a *ngIf="plugin.homepageUrl" [href]="plugin.homepageUrl" target="_blank" mat-stroked-button class="docs-btn">
+              <mat-icon>description</mat-icon> Docs
+            </a>
+            <button mat-icon-button class="bookmark-btn" [class.bookmarked]="isFavorite" (click)="isFavorite = !isFavorite" matTooltip="Bookmark">
+              <mat-icon>{{ isFavorite ? 'bookmark' : 'bookmark_border' }}</mat-icon>
+            </button>
+          </div>
         </div>
 
-        <div class="tags-row">
-          <span *ngFor="let tag of plugin.tags" class="tag">{{ tag }}</span>
+        <!-- Stats row -->
+        <div class="stats-row">
+          <div class="stat-card">
+            <mat-icon class="stat-icon star">star</mat-icon>
+            <div>
+              <div class="stat-value">{{ formatStars(plugin.githubStars) }}</div>
+              <div class="stat-label">Stars</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <mat-icon class="stat-icon fork">call_split</mat-icon>
+            <div>
+              <div class="stat-value">{{ plugin.githubForks ?? '—' }}</div>
+              <div class="stat-label">Forks</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <mat-icon class="stat-icon issue">bug_report</mat-icon>
+            <div>
+              <div class="stat-value">{{ plugin.openIssues ?? '—' }}</div>
+              <div class="stat-label">Issues</div>
+            </div>
+          </div>
+          <div class="stat-card" *ngIf="plugin.license">
+            <mat-icon class="stat-icon license">gavel</mat-icon>
+            <div>
+              <div class="stat-value">{{ plugin.license }}</div>
+              <div class="stat-label">License</div>
+            </div>
+          </div>
         </div>
-      </div>
-
-      <div class="hero-actions">
-        <a
-          [href]="plugin.githubUrl"
-          target="_blank"
-          mat-flat-button
-          class="github-btn"
-        >
-          <mat-icon>open_in_new</mat-icon>
-          View on GitHub
-        </a>
-        <a
-          *ngIf="plugin.homepageUrl"
-          [href]="plugin.homepageUrl"
-          target="_blank"
-          mat-stroked-button
-          class="docs-btn"
-        >
-          <mat-icon>description</mat-icon>
-          Documentation
-        </a>
       </div>
     </div>
 
-    <!-- Quick Install -->
-    <div class="install-quick">
-      <h2 class="section-title">Quick Install</h2>
-      <mat-tab-group class="install-tabs">
-        <mat-tab label="lazy.nvim">
-          <div class="code-block">
-            <pre><code>{{ getInstallSnippet('lazy') }}</code></pre>
-            <button
-              mat-icon-button
-              matTooltip="Copy"
-              (click)="copyToClipboard(getInstallSnippet('lazy'))"
-            >
-              <mat-icon>content_copy</mat-icon>
-            </button>
-          </div>
-        </mat-tab>
+    <!-- Body -->
+    <div class="container detail-body fade-in-up" style="animation-delay: 0.1s">
 
-        <mat-tab label="packer.nvim">
-          <div class="code-block">
-            <pre><code>{{ getInstallSnippet('packer') }}</code></pre>
-            <button
-              mat-icon-button
-              matTooltip="Copy"
-              (click)="copyToClipboard(getInstallSnippet('packer'))"
-            >
-              <mat-icon>content_copy</mat-icon>
-            </button>
-          </div>
-        </mat-tab>
-
-        <mat-tab label="vim-plug">
-          <div class="code-block">
-            <pre><code>{{ getInstallSnippet('plug') }}</code></pre>
-            <button
-              mat-icon-button
-              matTooltip="Copy"
-              (click)="copyToClipboard(getInstallSnippet('plug'))"
-            >
-              <mat-icon>content_copy</mat-icon>
-            </button>
-          </div>
-        </mat-tab>
-      </mat-tab-group>
-    </div>
-
-    <!-- README sections -->
-    <div class="readme-sections">
-      <div *ngIf="plugin.installGuide" class="readme-section">
-        <h2 class="section-title">
-          <mat-icon>download</mat-icon>
-          Installation Guide
-        </h2>
-        <div
-          class="markdown-body"
-          [innerHTML]="renderMarkdown(plugin.installGuide)"
-        ></div>
+      <!-- ⚡ NeoHub CLI Install -->
+      <div class="cli-section">
+        <div class="cli-header">
+          <span class="cli-label">
+            <mat-icon>terminal</mat-icon>
+            Install with NeoHub CLI
+          </span>
+          <a href="#" class="cli-docs-link">Get the CLI →</a>
+        </div>
+        <div class="cli-block">
+          <pre><code class="language-bash cli-code">neohub install {{ plugin.slug }}</code></pre>
+          <button class="cli-copy-btn" (click)="copyNeoHubCLI()" [class.copied]="cliCopied">
+            <mat-icon>{{ cliCopied ? 'check' : 'content_copy' }}</mat-icon>
+            {{ cliCopied ? 'Copied!' : 'Copy' }}
+          </button>
+        </div>
       </div>
 
-      <div *ngIf="plugin.configExample" class="readme-section">
-        <h2 class="section-title">
-          <mat-icon>settings</mat-icon>
-          Configuration
-        </h2>
-        <div
-          class="markdown-body"
-          [innerHTML]="renderMarkdown(plugin.configExample)"
-        ></div>
+      <!-- Plugin manager install -->
+      <div class="install-section">
+        <h2 class="section-title"><mat-icon>download</mat-icon> Install via Plugin Manager</h2>
+        <mat-tab-group class="install-tabs">
+          <mat-tab label="lazy.nvim">
+            <div class="code-block">
+              <pre><code class="language-lua">{{ getInstallSnippet('lazy') }}</code></pre>
+              <button mat-icon-button matTooltip="Copy" (click)="copyToClipboard(getInstallSnippet('lazy'))">
+                <mat-icon>content_copy</mat-icon>
+              </button>
+            </div>
+          </mat-tab>
+          <mat-tab label="packer.nvim">
+            <div class="code-block">
+              <pre><code class="language-lua">{{ getInstallSnippet('packer') }}</code></pre>
+              <button mat-icon-button matTooltip="Copy" (click)="copyToClipboard(getInstallSnippet('packer'))">
+                <mat-icon>content_copy</mat-icon>
+              </button>
+            </div>
+          </mat-tab>
+          <mat-tab label="vim-plug">
+            <div class="code-block">
+              <pre><code class="language-vim">{{ getInstallSnippet('plug') }}</code></pre>
+              <button mat-icon-button matTooltip="Copy" (click)="copyToClipboard(getInstallSnippet('plug'))">
+                <mat-icon>content_copy</mat-icon>
+              </button>
+            </div>
+          </mat-tab>
+        </mat-tab-group>
       </div>
 
-      <div *ngIf="plugin.keymapsSection" class="readme-section">
-        <h2 class="section-title">
-          <mat-icon>keyboard</mat-icon>
-          Keymaps
-        </h2>
-        <div
-          class="markdown-body"
-          [innerHTML]="renderMarkdown(plugin.keymapsSection)"
-        ></div>
+      <!-- README sections -->
+      <div class="readme-sections">
+        <div *ngIf="plugin.installGuide" class="readme-section">
+          <h2 class="section-title"><mat-icon>download</mat-icon> Installation Guide</h2>
+          <div class="markdown-body" [innerHTML]="renderMarkdown(plugin.installGuide)"></div>
+        </div>
+
+        <div *ngIf="plugin.configExample" class="readme-section">
+          <h2 class="section-title"><mat-icon>settings</mat-icon> Configuration</h2>
+          <div class="markdown-body" [innerHTML]="renderMarkdown(plugin.configExample)"></div>
+        </div>
+
+        <div *ngIf="plugin.keymapsSection" class="readme-section">
+          <h2 class="section-title"><mat-icon>keyboard</mat-icon> Keymaps</h2>
+          <div class="markdown-body" [innerHTML]="renderMarkdown(plugin.keymapsSection)"></div>
+        </div>
+
+        <div *ngIf="!plugin.installGuide && !plugin.configExample" class="not-scraped">
+          <mat-icon>sync</mat-icon>
+          <p>Full documentation coming soon — view the <a [href]="plugin.githubUrl" target="_blank">GitHub repository</a> in the meantime.</p>
+        </div>
       </div>
 
-      <div
-        *ngIf="!plugin.installGuide && !plugin.configExample"
-        class="not-scraped"
-      >
-        <mat-icon>sync</mat-icon>
-        <p>
-          Full documentation coming soon — check the
-          <a [href]="plugin.githubUrl" target="_blank">GitHub repository</a>
-          in the meantime.
-        </p>
-      </div>
     </div>
   </ng-container>
 </div>

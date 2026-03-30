@@ -1,40 +1,64 @@
 <div class="sidebar">
 
-    <!-- Search -->
-    <div class="sidebar-section">
-        <mat-form-field appearance="outline" class="search-field">
-            <mat-label>Search plugins...</mat-label>
-            <input matInput [(ngModel)]="searchQuery" (keyup.enter)="onSearch()" (input)="onSearch()">
-            <mat-icon matSuffix>search</mat-icon>
-        </mat-form-field>
-    </div>
 
-    <!-- Sort -->
-    <div class="sidebar-section">
-        <h3 class="section-title">Sort By</h3>
-        <mat-form-field appearance="outline" class="full-width">
-            <mat-select [(ngModel)]="selectedSort" (selectionChange)="onSortChange()">
-                <mat-option *ngFor="let opt of sortOptions" [value]="opt.value">
-                    {{ opt.label }}
-                </mat-option>
-            </mat-select>
-        </mat-form-field>
+  <!-- Popularity -->
+  <div class="sidebar-section">
+    <h3 class="section-title">Popularity</h3>
+    <div class="sort-pills">
+      <button *ngFor="let opt of starOptions"
+        class="sort-pill"
+        [class.active]="minStars === opt.value"
+        (click)="setMinStars(opt.value)">
+        {{ opt.label }}
+      </button>
     </div>
+  </div>
 
-    <!-- Categories -->
-    <div class="sidebar-section">
-        <h3 class="section-title">Categories</h3>
-        <div class="category-list">
-            <button *ngFor="let cat of categories" class="category-btn" [class.active]="selectedCategory === cat.slug"
-                (click)="onCategorySelect(cat.slug)">
-                {{ cat.name }}
-            </button>
-        </div>
-    </div>
-
-    <!-- Clear -->
-    <button *ngIf="selectedCategory || searchQuery" mat-stroked-button class="clear-btn" (click)="clearFilters()">
-        Clear Filters
+  <!-- Categories -->
+  <div class="sidebar-section">
+    <button class="section-header-btn" (click)="toggleSection('categories')">
+      <h3 class="section-title">Categories</h3>
+      <mat-icon class="collapse-icon" [class.rotated]="!collapsedSections['categories']">
+        keyboard_arrow_down
+      </mat-icon>
     </button>
+    <div class="collapsible" [class.collapsed]="collapsedSections['categories']">
+      <div class="category-list">
+        <button *ngFor="let cat of categories"
+          class="category-btn"
+          [class.active]="selectedCategory === cat.slug"
+          (click)="onCategorySelect(cat.slug)">
+          <span>{{ cat.name }}</span>
+          <mat-icon *ngIf="selectedCategory === cat.slug" class="check-icon">check</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tags -->
+  <div class="sidebar-section">
+    <button class="section-header-btn" (click)="toggleSection('tags')">
+      <h3 class="section-title">Tags</h3>
+      <mat-icon class="collapse-icon" [class.rotated]="!collapsedSections['tags']">
+        keyboard_arrow_down
+      </mat-icon>
+    </button>
+    <div class="collapsible" [class.collapsed]="collapsedSections['tags']">
+      <div class="tags-grid">
+        <button *ngFor="let tag of popularTags"
+          class="tag-pill"
+          [class.active]="selectedTags.includes(tag)"
+          (click)="toggleTag(tag)">
+          {{ tag }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Clear -->
+  <button *ngIf="hasActiveFilters" mat-stroked-button class="clear-btn" (click)="clearFilters()">
+    <mat-icon>clear_all</mat-icon>
+    Clear Filters
+  </button>
 
 </div>

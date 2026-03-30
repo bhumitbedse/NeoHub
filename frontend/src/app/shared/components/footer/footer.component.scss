@@ -1,0 +1,121 @@
+.footer {
+  background: var(--bg-page);
+  border-top: 1px solid var(--border);
+  padding: 64px 0 32px;
+  margin-top: auto;
+}
+
+.footer-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch; // Ensure heights match for nice layout
+  flex-wrap: wrap;
+  gap: 48px;
+  padding-bottom: 48px;
+  border-bottom: 1px solid var(--border);
+}
+
+// ─── Brand col ────────────────────────────────────────────────────────────────
+.brand-col {
+  max-width: 300px;
+}
+
+.footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  margin-bottom: 16px;
+  
+  svg { flex-shrink: 0; }
+}
+
+.logo-text {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.04em;
+}
+
+.tagline {
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+// ─── Links col ────────────────────────────────────────────────────────────────
+.links-col {
+  display: flex;
+  gap: 64px;
+}
+
+.link-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.group-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 8px;
+}
+
+.link-group a {
+  color: var(--text-secondary);
+  font-size: 14px;
+  text-decoration: none;
+  transition: var(--transition);
+  font-weight: 500;
+
+  &:hover { color: var(--text-primary); }
+}
+
+// ─── Bottom bar ───────────────────────────────────────────────────────────────
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 32px;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+
+.copyright {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.social-links {
+  display: flex;
+  gap: 12px;
+}
+
+.social-btn {
+  color: var(--text-muted);
+  background: var(--bg-surface);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+
+  svg { width: 18px; height: 18px; }
+
+  &:hover {
+    color: var(--text-primary);
+    background: var(--bg-elevated);
+    transform: translateY(-2px);
+  }
+}
+
+// ─── Responsive ───────────────────────────────────────────────────────────────
+@media (max-width: 768px) {
+  .footer-inner { flex-direction: column; gap: 40px; }
+  .links-col { flex-wrap: wrap; gap: 40px; }
+}

@@ -35,6 +35,9 @@ import { PluginDetailComponent } from "./features/plugins/pages/plugin-detail/pl
 import { PluginCardComponent } from "./features/plugins/components/plugin-card/plugin-card.component";
 import { FilterSidebarComponent } from "./features/plugins/components/filter-sidebar/filter-sidebar.component";
 import { AuthCallbackComponent } from "./features/auth/pages/auth-callback/auth-callback.component";
+import { FooterComponent } from "./shared/components/footer/footer.component";
+import { CommandPaletteComponent } from "./shared/components/command-palette/command-palette.component";
+import { PluginCardSkeletonComponent } from "./features/plugins/components/plugin-card-skeleton/plugin-card-skeleton.component";
 
 @NgModule({
   declarations: [
@@ -46,6 +49,9 @@ import { AuthCallbackComponent } from "./features/auth/pages/auth-callback/auth-
     PluginCardComponent,
     FilterSidebarComponent,
     AuthCallbackComponent,
+    FooterComponent,
+    CommandPaletteComponent,
+    PluginCardSkeletonComponent,
   ],
   imports: [
     BrowserModule,
