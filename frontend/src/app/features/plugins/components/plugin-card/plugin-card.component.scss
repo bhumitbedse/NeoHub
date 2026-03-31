@@ -12,11 +12,11 @@
   height: 100%;
   overflow: hidden;
 
-  // Add a soft lift effect instead of neon glow
+  // Add a soft lift effect
   &:hover {
     border-color: var(--border-accent);
     transform: translateY(-4px);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+    box-shadow: var(--shadow-card-hover);
     background: var(--bg-elevated);
   }
 }
@@ -136,7 +136,7 @@
   align-items: center;
   margin-top: auto;
   padding-top: 16px;
-  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  border-top: 1px solid var(--border);
 }
 
 .tags {
