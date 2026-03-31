@@ -2,9 +2,18 @@
 
 > The Neovim plugin registry with a CLI that actually installs plugins for you.
 
+## Install NeoHub CLI
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/bhumitbedse/NeoHub/main/scripts/install.sh | sh
+```
+
+Then install any Neovim plugin:
+
 ```bash
 neostore install telescope
-# Detects lazy.nvim, injects correct snippet, syncs — done.
+neostore install lazy
+neostore install gitsigns
 ```
 
 ---
@@ -100,14 +109,14 @@ go run main.go version
 
 ## Local URLs
 
-| Service | URL |
-|---|---|
-| Angular Frontend | http://localhost:4200 |
-| API Gateway | http://localhost:8080 |
-| Swagger UI | http://localhost:8080/swagger-ui |
-| pgAdmin | http://localhost:8091 |
-| Redis Commander | http://localhost:8090 |
-| Email (Mailpit) | http://localhost:8025 |
+| Service          | URL                              |
+| ---------------- | -------------------------------- |
+| Angular Frontend | http://localhost:4200            |
+| API Gateway      | http://localhost:8080            |
+| Swagger UI       | http://localhost:8080/swagger-ui |
+| pgAdmin          | http://localhost:8091            |
+| Redis Commander  | http://localhost:8090            |
+| Email (Mailpit)  | http://localhost:8025            |
 
 ---
 
@@ -158,16 +167,16 @@ Mount your project inside WSL2 filesystem (`~/projects/neohub`), not on the Wind
 
 ## Tech Stack
 
-| Layer | Tech |
-|---|---|
-| Frontend | Angular 17, TypeScript, Tailwind CSS |
-| Backend | Java 21, Spring Boot 3.2, Maven |
-| Database | PostgreSQL 16 (full-text search via tsvector) |
-| Cache | Redis 7 |
-| CLI | Go 1.22, Cobra, Bubbletea |
-| Auth | GitHub OAuth2 + JWT |
-| Email (local) | Mailpit (SMTP mock) |
-| Containers | Docker, Docker Compose |
+| Layer         | Tech                                          |
+| ------------- | --------------------------------------------- |
+| Frontend      | Angular 17, TypeScript, Tailwind CSS          |
+| Backend       | Java 21, Spring Boot 3.2, Maven               |
+| Database      | PostgreSQL 16 (full-text search via tsvector) |
+| Cache         | Redis 7                                       |
+| CLI           | Go 1.22, Cobra, Bubbletea                     |
+| Auth          | GitHub OAuth2 + JWT                           |
+| Email (local) | Mailpit (SMTP mock)                           |
+| Containers    | Docker, Docker Compose                        |
 
 ---
 
