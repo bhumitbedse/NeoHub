@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-const defaultBase = "http://localhost:8080/api/v1"
+const defaultBase = "https://neohub-production.up.railway.app/api/v1"
 
 type Client struct {
 	BaseURL string
