@@ -152,7 +152,7 @@
   align-items: center;
   gap: 14px;
   background: var(--bg-page);
-  border: 1px solid transparent; // No harsh line
+  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg); // 16px corners
   padding: 16px 20px;
   min-width: 130px;
@@ -376,7 +376,7 @@
   a { color: var(--accent); font-weight: 500; }
 }
 
-// ─── Material tab dark theme ──────────────────────────────────────────────────
+// ─── Material Tab Overrides ────────────────────────────────────────────────────
 ::ng-deep {
   .mat-mdc-tab-group {
     .mat-mdc-tab-header      { background: var(--bg-surface); border-bottom: 1px solid var(--border); }
